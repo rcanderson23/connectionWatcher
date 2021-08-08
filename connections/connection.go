@@ -62,9 +62,12 @@ func (cw *ConnectionWatcher) Observe(path string, t int64) {
 	cw.Connections = obsConns
 }
 
+// updateIPBlocker only updates the blocker when the local port isn't in the ephemeral range
 func (cw *ConnectionWatcher) updateIPBlocker(conns map[string]Connection, t int64) {
 	for _, conn := range conns {
-		cw.Blocker.AddPort(conn.LocalIP.String(), conn.RemoteIP.String(), conn.LocalPort, t)
+		if !IsEphemeralPort(conn.LocalPort) {
+			cw.Blocker.AddPort(conn.LocalIP.String(), conn.RemoteIP.String(), conn.LocalPort, t)
+		}
 	}
 }
 
@@ -73,7 +76,7 @@ func (cw *ConnectionWatcher) updateIPBlocker(conns map[string]Connection, t int6
 func printNewConnections(obs map[string]Connection, past map[string]Connection) {
 	for i := range obs {
 		if _, present := past[i]; !present {
-			if obs[i].LocalPort >= MinEphemeralPort && obs[i].LocalPort <= MaxEphemeralPort {
+			if IsEphemeralPort(obs[i].LocalPort) {
 				log.Printf("New connection %s:%d -> %s:%d\n", obs[i].LocalIP, obs[i].LocalPort, obs[i].RemoteIP, obs[i].RemotePort)
 			} else {
 				log.Printf("New connection %s:%d -> %s:%d\n", obs[i].RemoteIP, obs[i].RemotePort, obs[i].LocalIP, obs[i].LocalPort)
