@@ -27,4 +27,4 @@ jobs:
         with:
           push: true
           tags: |
-            ghcr.io/rcanderson23/connectionwatcher:${{ env:RELEASE_VERSION }}
+            ghcr.io/rcanderson23/connectionwatcher:${{ env.RELEASE_VERSION }}
