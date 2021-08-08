@@ -2,7 +2,6 @@ on:
   push:
     branches:
       - 'main'
-      - 'workflows'
 name: container-latest
 jobs:
   test:
