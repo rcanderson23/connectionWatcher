@@ -86,6 +86,8 @@ func (ipb *IPBlocker) HostsToBlock() []RemoteHost {
 			var ports []uint16
 			for port := range portMap {
 				ports = append(ports, port)
+
+				delete(ipb.IPPortTime[key], port)
 			}
 
 			ips := strings.Split(key, ":")
@@ -110,7 +112,7 @@ func (ipb *IPBlocker) BlockHosts(hosts []RemoteHost) []error {
 	for _, host := range hosts {
 		remoteIP := host.RemoteIP.String()
 
-		if remoteIP != "0.0.0.0" && remoteIP != "127.0.0.1" {
+		if remoteIP != "0.0.0.0" && remoteIP != "127.0.0.1" && !ipb.isBlocked(host.RemoteIP) {
 			log.Printf("Port scan detected: %s\n", host.String())
 
 			if ipb.IP4Table != nil {
@@ -123,6 +125,15 @@ func (ipb *IPBlocker) BlockHosts(hosts []RemoteHost) []error {
 	}
 
 	return errs
+}
+
+func (ipb *IPBlocker) isBlocked(addr net.IP) bool {
+	for _, ip := range ipb.BlockedHosts {
+		if ip.Equal(addr) {
+			return true
+		}
+	}
+	return false
 }
 
 func (ipb *IPBlocker) insertRule(ip net.IP) error {

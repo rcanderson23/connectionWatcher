@@ -12,6 +12,11 @@ import (
 	"github.com/rcanderson23/connectionWatcher/metrics"
 )
 
+const (
+	MinEphemeralPort = uint16(32768)
+	MaxEphemeralPort = uint16(60999)
+)
+
 // Connection stores the connection tuple
 type Connection struct {
 	LocalIP    net.IP
@@ -24,9 +29,11 @@ type Connection struct {
 type ConnectionWatcher struct {
 	Connections map[string]Connection
 	Blocker     *IPBlocker
+	IgnoredIPs  []net.IP
 }
 
 // NewConnectionWatcher returns a pointer to a new ConnectionWatcher that includes the provided IPBlocker
+// as well as a set of IPs that should not be inserted into the IPBlocker
 func NewConnectionWatcher(blocker *IPBlocker) *ConnectionWatcher {
 	return &ConnectionWatcher{
 		Connections: make(map[string]Connection),
@@ -57,14 +64,20 @@ func (cw *ConnectionWatcher) Observe(path string, t int64) {
 
 func (cw *ConnectionWatcher) updateIPBlocker(conns map[string]Connection, t int64) {
 	for _, conn := range conns {
-		cw.Blocker.AddPort(conn.LocalIP.String(), conn.RemoteIP.String(), conn.RemotePort, t)
+		cw.Blocker.AddPort(conn.LocalIP.String(), conn.RemoteIP.String(), conn.LocalPort, t)
 	}
 }
 
+// shortcut: we are assuming that if the local port is in the default ephemeral range, it is the local host connecting
+// out. This isn't guaranteed but increases the accuracy of the printed logs.
 func printNewConnections(obs map[string]Connection, past map[string]Connection) {
 	for i := range obs {
 		if _, present := past[i]; !present {
-			log.Printf("New connection %s:%d -> %s:%d\n", obs[i].RemoteIP, obs[i].RemotePort, obs[i].LocalIP, obs[i].LocalPort)
+			if obs[i].LocalPort >= MinEphemeralPort && obs[i].LocalPort <= MaxEphemeralPort {
+				log.Printf("New connection %s:%d -> %s:%d\n", obs[i].LocalIP, obs[i].LocalPort, obs[i].RemoteIP, obs[i].RemotePort)
+			} else {
+				log.Printf("New connection %s:%d -> %s:%d\n", obs[i].RemoteIP, obs[i].RemotePort, obs[i].LocalIP, obs[i].LocalPort)
+			}
 			metrics.NewConnections.Inc()
 		}
 	}
