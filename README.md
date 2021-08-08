@@ -18,6 +18,12 @@ than watch `/proc/net/tcp`.
 ```
 docker run --network host --cap-drop ALL --cap-add NET_ADMIN --cap-add NET_RAW ghcr.io/rcanderson23/connectionwatcher:v0.1.0
 ```
+### Binary
+``` 
+wget https://github.com/rcanderson23/connectionWatcher/releases/download/v0.1.0/connectionWatcher
+chmod +x connectionWatcher
+./connectionWatcher
+```
 ### Source
 The `main` branch should be treated as development and can be unstable. Use tagged branches or pre-compiled binaries
 for production.
