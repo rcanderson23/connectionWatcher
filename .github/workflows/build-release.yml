@@ -23,7 +23,7 @@ jobs:
       - name: Build
         run: make build
       - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+        uses: ncipollo/release-action@v1
         with:
-          files: bin/connectionWatcher
+          artifacts: "bin/connectionWatcher"
+          token: ${{ secrets.GITHUB_TOKEN }}
