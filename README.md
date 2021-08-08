@@ -7,10 +7,12 @@ watch packets and make decisions based on the TCP handshake rather than watch `/
 
 ## Requirements
 * Linux x86_64
-* NET_ADMIN privileges (if you want IP blocking abilities) 
+* Run as root
+* Go 1.16.x (if running from source, have not tested other versions)
 
 ## Usage
 ### Source
+1. [Install Go](https://golang.org/doc/install)
 ```
 git clone https://github.com/rcanderson23/connectionWatcher
 cd connectionWatcher
