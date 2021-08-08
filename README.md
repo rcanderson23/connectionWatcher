@@ -2,8 +2,10 @@
 connectionWatcher polls `/proc/net/tcp` every 10 seconds to parse TCP connections. ConnectionWatcher implements a naive 
 port scanner where if detects multiple connections from the same remote IP on multiple local ports. This block is done 
 by inserting rules via iptables. Functionality is limited by what `/proc/net/tcp` provides, as such, it is possible that 
-incoming connections are blocked because of outgoing connections made by the host. The best fix for this issue is to
-watch packets and make decisions based on the TCP handshake rather than watch `/proc/net/tcp`. 
+incoming connections are blocked because of outgoing connections made by the host. There is logic to check if the 
+local port is in the ephemeral range and treat this as an outgoing connection. This isn't 100% accurate for this 
+determination. The best fix for this issue is to watch packets and make decisions based on the TCP handshake rather 
+than watch `/proc/net/tcp`. 
 
 ## Requirements
 * Linux x86_64
