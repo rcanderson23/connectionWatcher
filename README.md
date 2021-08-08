@@ -9,11 +9,18 @@ than watch `/proc/net/tcp`.
 
 ## Requirements
 * Linux x86_64
-* Run as root
+* Root privileges
 * Go 1.16.x (if running from source, have not tested other versions)
 
 ## Usage
+### Docker
+1. [Install Docker](https://docs.docker.com/engine/install/)
+```
+docker run --network host --cap-drop ALL --cap-add NET_ADMIN --cap-add NET_RAW ghcr.io/rcanderson23/connectionwatcher:v0.1.0
+```
 ### Source
+The `main` branch should be treated as development and can be unstable. Use tagged branches or pre-compiled binaries
+for production.
 1. [Install Go](https://golang.org/doc/install)
 ```
 git clone https://github.com/rcanderson23/connectionWatcher
