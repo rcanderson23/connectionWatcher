@@ -48,6 +48,7 @@ func (cw *ConnectionWatcher) Observe(path string, t int64) {
 		log.Printf("failed to open file: %v", err)
 		return
 	}
+	defer f.Close()
 
 	obsConns, err := getConnections(f)
 	if err != nil {
