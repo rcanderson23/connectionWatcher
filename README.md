@@ -16,11 +16,11 @@ than watch `/proc/net/tcp`.
 ### Docker
 1. [Install Docker](https://docs.docker.com/engine/install/)
 ```
-docker run --network host --cap-drop ALL --cap-add NET_ADMIN --cap-add NET_RAW ghcr.io/rcanderson23/connectionwatcher:v0.1.0
+docker run --network host --cap-drop ALL --cap-add NET_ADMIN --cap-add NET_RAW ghcr.io/rcanderson23/connectionwatcher:v0.1.1
 ```
 ### Binary
 ``` 
-wget https://github.com/rcanderson23/connectionWatcher/releases/download/v0.1.0/connectionWatcher
+wget https://github.com/rcanderson23/connectionWatcher/releases/download/v0.1.1/connectionWatcher
 chmod +x connectionWatcher
 ./connectionWatcher
 ```
